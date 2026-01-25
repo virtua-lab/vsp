@@ -160,6 +160,8 @@ body::before {
     text-shadow: 0 0 20px var(--primary-neon), 0 0 30px var(--secondary-neon);
     letter-spacing: 5px;
     min-height: 1.2em;
+    display: inline-block;
+    text-align: left;
 }
 
 .hero-subtext {
