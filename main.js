@@ -1,5 +1,4 @@
-// --- Constants & Config ---
-const slogans = ["記憶に残る体験を。", "MEMORABLE EXPERIENCE."];
+const slogans = ["記憶に残る\n体験を。", "MEMORABLE EXPERIENCE."];
 let sloganIndex = 0;
 const typingDelay = 120;
 const eraseDelay = 60;
@@ -39,30 +38,43 @@ function startTyping() {
 
 function typeText(text, index) {
     if (index < text.length) {
+        const char = text.charAt(index);
+        const isNewline = char === '\n';
         // Check if the current character is the last dot "。" of the first slogan
-        const isLastDot = (sloganIndex === 0 && index === text.length - 1 && text[index] === "。");
+        const isLastDot = (sloganIndex === 0 && index === text.length - 1 && char === "。");
 
-        if (isLastDot) {
+        if (isNewline) {
+            sloganElement.innerHTML += '<br>';
+            setTimeout(() => typeText(text, index + 1), typingDelay);
+        } else if (isLastDot) {
             // Delay specifically for the dot
             setTimeout(() => {
-                sloganElement.textContent += text.charAt(index);
+                sloganElement.innerHTML += char;
                 setTimeout(eraseText, nextTextDelay);
             }, dotDelay);
         } else {
-            sloganElement.textContent += text.charAt(index);
+            sloganElement.innerHTML += char;
             setTimeout(() => typeText(text, index + 1), typingDelay);
         }
     } else {
-        if (!(sloganIndex === 0)) {
+        if (sloganIndex !== 0) {
             setTimeout(eraseText, nextTextDelay);
         }
     }
 }
 
 function eraseText() {
-    const text = sloganElement.textContent;
-    if (text.length > 0) {
-        sloganElement.textContent = text.substring(0, text.length - 1);
+    let html = sloganElement.innerHTML;
+    if (html.length > 0) {
+        if (html.endsWith('>')) {
+            const lastTag = html.lastIndexOf('<');
+            if (lastTag !== -1) {
+                html = html.substring(0, lastTag);
+            }
+        } else {
+            html = html.substring(0, html.length - 1);
+        }
+        sloganElement.innerHTML = html;
         setTimeout(eraseText, eraseDelay);
     } else {
         sloganIndex = (sloganIndex + 1) % slogans.length;
